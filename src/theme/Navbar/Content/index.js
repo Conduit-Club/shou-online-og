@@ -1,15 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
 import clsx from "clsx";
 
-import {
-  ErrorCauseBoundary,
-  ThemeClassNames,
-  useThemeConfig,
-} from "@docusaurus/theme-common";
-import {
-  splitNavbarItems,
-  useNavbarMobileSidebar,
-} from "@docusaurus/theme-common/internal";
+import { ErrorCauseBoundary, ThemeClassNames, useThemeConfig } from "@docusaurus/theme-common";
+import { splitNavbarItems, useNavbarMobileSidebar } from "@docusaurus/theme-common/internal";
 
 import NavbarColorModeToggle from "@theme/Navbar/ColorModeToggle";
 import NavbarItem from "@theme/NavbarItem";
@@ -59,9 +52,7 @@ function NavbarSearchControl() {
   const focusSearchInput = useCallback(() => {
     setOpen(true);
     window.requestAnimationFrame(() => {
-      containerRef.current
-        ?.querySelector(".navbar__search-input")
-        ?.focus();
+      containerRef.current?.querySelector(".navbar__search-input")?.focus();
     });
   }, []);
 
@@ -97,20 +88,8 @@ function NavbarSearchControl() {
 function NavbarContentLayout({ left, right }) {
   return (
     <div className="navbar__inner">
-      <div
-        className={clsx(
-          ThemeClassNames.layout.navbar.containerLeft,
-          "navbar__items",
-        )}
-      >
-        {left}
-      </div>
-      <div
-        className={clsx(
-          ThemeClassNames.layout.navbar.containerRight,
-          "navbar__items navbar__items--right",
-        )}
-      >
+      <div className={clsx(ThemeClassNames.layout.navbar.containerLeft, "navbar__items")}>{left}</div>
+      <div className={clsx(ThemeClassNames.layout.navbar.containerRight, "navbar__items navbar__items--right")}>
         {right}
       </div>
     </div>
