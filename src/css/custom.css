@@ -128,6 +128,7 @@ body::selection {
 }
 
 .shou-navbar-search-control {
+  min-width: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -162,6 +163,8 @@ body::selection {
 }
 
 .shou-navbar-search-field {
+  min-width: 0;
+  max-width: 100%;
   display: block;
 }
 
@@ -719,26 +722,39 @@ body::selection {
     display: inline-flex;
   }
 
+  .shou-navbar-search-button[hidden],
+  .shou-navbar-search-control--open .shou-navbar-search-button {
+    display: none;
+  }
+
+  .navbar__inner,
+  .navbar__items:not(.navbar__items--right),
+  .navbar__brand,
+  .navbar__title {
+    min-width: 0;
+  }
+
+  .navbar__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .shou-navbar-search-field {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    z-index: 1;
+    position: static;
     width: 0;
     overflow: hidden;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(-50%);
     transition:
       width 160ms ease,
-      opacity 160ms ease,
-      visibility 160ms ease;
+      opacity 160ms ease;
   }
 
-  .shou-navbar-search-control--open .shou-navbar-search-field,
-  .shou-navbar-search-control:focus-within .shou-navbar-search-field {
+  .shou-navbar-search-control--open .shou-navbar-search-field {
     width: min(12rem, calc(100vw - 6rem));
+    max-width: calc(100vw - var(--ifm-navbar-padding-horizontal) * 2);
     overflow: visible;
     opacity: 1;
     visibility: visible;

@@ -29,6 +29,6 @@ pixi run --locked fmt-check
 
 `SITE_URL` 可指定部署站点的规范 URL，`BASE_URL` 可指定子路径部署前缀；未设置时，本地构建使用 `http://localhost:3000/`，Vercel 构建优先使用其提供的部署 URL。这样配置不会把未核实的生产域名写入站点元数据。
 
-为兼容原 VuePress 的地址，显式带 `.html` 的页面继续使用 `.html` slug；配置不设置全局 `trailingSlash`，Docusaurus 会把这类页面输出为单个 HTML 文件，把栏目页输出为 `index.html` 目录。预览使用 `serve.json`，Vercel 使用 `cleanUrls: false`，两者都会保留 `.html` 文件名。
+为兼容原 VuePress 的地址，显式带 `.html` 的页面继续使用 `.html` slug；配置不设置全局 `trailingSlash`，Docusaurus 会把这类页面输出为单个 HTML 文件，把栏目页输出为 `index.html` 目录。预览使用 `serve.json`，仅对不带 `.html` 的路径启用 clean URL 查找 `index.html`，Vercel 使用 `cleanUrls: false`；两者都会保留 `.html` 文件名。
 
-本地搜索插件的旧版本在未设置 `trailingSlash` 时会把显式 `.html` 页面误当成目录；`src/plugins/searchLocalCompat.js` 只修正搜索索引读取的文件路径，保留栏目页的目录输出。`serve` 脚本显式使用 `--config ../serve.json`，因为 `serve` 会相对于待服务的 `build` 目录查找配置文件。
+本地搜索插件的旧版本在未设置 `trailingSlash` 时会把显式 `.html` 页面误当成目录；`src/plugins/searchLocalCompat.js` 只修正搜索索引读取的文件路径，保留栏目页的目录输出。`serve.json` 的 clean URL 匹配排除 `.html` 路径，避免 `serve` 将历史链接重定向为无扩展名地址；`serve` 脚本显式使用 `--config ../serve.json`，因为 `serve` 会相对于待服务的 `build` 目录查找配置文件。
