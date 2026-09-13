@@ -5,7 +5,8 @@
   "scripts": {
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "lint": "oxlint",
+    "lint": "oxlint src scripts docusaurus.config.js sidebars.js",
+    "prestart": "docusaurus clear",
     "start": "docusaurus start --host 0.0.0.0 --port 4173",
     "build": "docusaurus build",
     "serve": "serve build --listen 8080 --config ../serve.json",

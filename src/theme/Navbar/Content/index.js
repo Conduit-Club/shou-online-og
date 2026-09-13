@@ -1,15 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
-import {
-  ErrorCauseBoundary,
-  ThemeClassNames,
-  useThemeConfig,
-} from "@docusaurus/theme-common";
-import {
-  splitNavbarItems,
-  useNavbarMobileSidebar,
-} from "@docusaurus/theme-common/internal";
+import { ErrorCauseBoundary, ThemeClassNames, useThemeConfig } from "@docusaurus/theme-common";
+import { splitNavbarItems, useNavbarMobileSidebar } from "@docusaurus/theme-common/internal";
 
 import NavbarColorModeToggle from "@theme/Navbar/ColorModeToggle";
 import NavbarItem from "@theme/NavbarItem";
@@ -55,19 +48,74 @@ function SearchIcon() {
 function NavbarSearchControl() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
+  const searchButtonRef = useRef(null);
+
+  const closeSearch = useCallback((restoreFocus = false) => {
+    setOpen(false);
+
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => {
+        searchButtonRef.current?.focus();
+      });
+    }
+  }, []);
 
   const focusSearchInput = useCallback(() => {
     setOpen(true);
     window.requestAnimationFrame(() => {
-      containerRef.current
-        ?.querySelector(".navbar__search-input")
-        ?.focus();
+      containerRef.current?.querySelector(".navbar__search-input")?.focus();
     });
   }, []);
 
-  const handleSearchBarToggle = useCallback((nextOpen) => {
-    setOpen(nextOpen);
-  }, []);
+  const handleSearchBarToggle = useCallback(
+    (nextOpen) => {
+      if (nextOpen) {
+        setOpen(true);
+        return;
+      }
+
+      // SearchBar reports input blur before focus has moved to the next
+      // element. Wait a frame so controls inside this wrapper stay usable.
+      window.requestAnimationFrame(() => {
+        if (!containerRef.current?.contains(document.activeElement)) {
+          closeSearch();
+        }
+      });
+    },
+    [closeSearch],
+  );
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      event.preventDefault();
+      closeSearch(true);
+    };
+
+    const handlePointerDown = (event) => {
+      if (!containerRef.current?.contains(event.target)) {
+        const searchInput = containerRef.current?.querySelector(".navbar__search-input");
+        if (searchInput === document.activeElement) {
+          searchInput.blur();
+        }
+        closeSearch();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [closeSearch, open]);
 
   return (
     <div
@@ -77,12 +125,14 @@ function NavbarSearchControl() {
       ref={containerRef}
     >
       <button
+        ref={searchButtonRef}
         type="button"
         className="clean-btn shou-navbar-search-button"
         aria-controls="shou-navbar-search-field"
         aria-expanded={open}
-        aria-label="搜索"
-        title="搜索"
+        aria-label={open ? "关闭搜索" : "打开搜索"}
+        title={open ? "关闭搜索" : "搜索"}
+        hidden={open}
         onClick={focusSearchInput}
       >
         <SearchIcon />
@@ -97,20 +147,8 @@ function NavbarSearchControl() {
 function NavbarContentLayout({ left, right }) {
   return (
     <div className="navbar__inner">
-      <div
-        className={clsx(
-          ThemeClassNames.layout.navbar.containerLeft,
-          "navbar__items",
-        )}
-      >
-        {left}
-      </div>
-      <div
-        className={clsx(
-          ThemeClassNames.layout.navbar.containerRight,
-          "navbar__items navbar__items--right",
-        )}
-      >
+      <div className={clsx(ThemeClassNames.layout.navbar.containerLeft, "navbar__items")}>{left}</div>
+      <div className={clsx(ThemeClassNames.layout.navbar.containerRight, "navbar__items navbar__items--right")}>
         {right}
       </div>
     </div>

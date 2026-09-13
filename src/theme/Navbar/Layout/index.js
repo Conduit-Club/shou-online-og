@@ -3,10 +3,7 @@ import clsx from "clsx";
 
 import { translate } from "@docusaurus/Translate";
 import { ThemeClassNames } from "@docusaurus/theme-common";
-import {
-  useHideableNavbar,
-  useNavbarMobileSidebar,
-} from "@docusaurus/theme-common/internal";
+import { useHideableNavbar, useNavbarMobileSidebar } from "@docusaurus/theme-common/internal";
 import { useThemeConfig } from "@docusaurus/theme-common";
 
 import NavbarMobileSidebar from "@theme/Navbar/MobileSidebar";
@@ -14,13 +11,7 @@ import NavbarMobileSidebar from "@theme/Navbar/MobileSidebar";
 import styles from "./styles.module.css";
 
 function NavbarBackdrop({ onClick }) {
-  return (
-    <div
-      role="presentation"
-      className="navbar-sidebar__backdrop"
-      onClick={onClick}
-    />
-  );
+  return <div role="presentation" className="navbar-sidebar__backdrop" onClick={onClick} />;
 }
 
 function NavbarEscapeHandler() {
@@ -72,10 +63,7 @@ export default function NavbarLayout({ children }) {
         ThemeClassNames.layout.navbar.container,
         "navbar",
         "navbar--fixed-top",
-        hideOnScroll && [
-          styles.navbarHideable,
-          !isNavbarVisible && styles.navbarHidden,
-        ],
+        hideOnScroll && [styles.navbarHideable, !isNavbarVisible && styles.navbarHidden],
         {
           "navbar--dark": style === "dark",
           "navbar--primary": style === "primary",
